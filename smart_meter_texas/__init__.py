@@ -56,14 +56,15 @@ class Meter:
         # Trigger an on-demand meter read.
         await client.request(
             OD_READ_ENDPOINT,
-            json={"ESIID": self.esiid, "MeterNumber": self.meter},
+            json={"ESIID": self.esiid, "MeterNumber": self.meter}
         )
 
+        await asyncio.sleep(randrange(16,35))
         # Occasionally check to see if on-demand meter reading is complete.
         while True:
             json_response = await client.request(
                 LATEST_OD_READ_ENDPOINT,
-                json={"ESIID": self.esiid},
+                json={"ESIID": self.esiid}
             )
             try:
                 data = json_response["data"]
@@ -145,8 +146,29 @@ class Client:
         """Make an initial GET request to initialize the session otherwise
         future POST requests will timeout."""
         self._init_ssl_context()
-        await self.websession.get(
-            BASE_URL, headers=self._agent_headers(), ssl=self.ssl_context
+
+        _LOGGER.debug("Initializing session")
+
+        resp = await self.websession.request(
+            method="GET",
+            url=BASE_URL,
+            headers={**self._agent_headers(), **{
+                "DNT": "1",
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+                "Accept-Encoding": "gzip, deflate, br",
+                "Accept-Language": "en-US,en;q=0.9",
+                "Cache-Control": "no-cache",
+                "Upgrade-Insecure-Requests": "1",
+                "Connection": "keep-alive",
+                "Pragma": "no-cache",
+                "Sec-Fetch-Dest": "document",
+                "Sec-Fetch-Mode": "navigate",
+                "Sec-Fetch-Site": "none",
+                "Sec-Fetch-User": "?1"
+            }},
+            ssl=self.ssl_context,
+            allow_redirects=False,
+            timeout=60
         )
 
     def _agent_headers(self):
@@ -165,17 +187,20 @@ class Client:
     async def request(
         self,
         path: str,
-        method: str = "post",
+        method: str = "POST",
         **kwargs,
     ):
         """Helper method to make API calls against the SMT API."""
         await self.authenticate()
+
+        await asyncio.sleep(randrange(16,35))
+
         resp = await self.websession.request(
-            method,
-            f"{BASE_ENDPOINT}{path}",
-            headers=self.headers,
+            method=method,
+            url=f"{BASE_ENDPOINT}{path}",
+            headers={**self.headers, **{ "Referrer": BASE_URL + "/dashboard" }},
             **kwargs,
-            ssl=self.ssl_context,
+            ssl=self.ssl_context
         )
         if resp.status == 401:
             _LOGGER.debug("Authentication token expired; requesting new token")
@@ -191,27 +216,24 @@ class Client:
 
     async def authenticate(self):
         if not self.token_valid:
-            _LOGGER.debug("Requesting login token")
-
             # Make an initial GET request otherwise subsequent calls will timeout.
             await self._init_websession()
-
+            await asyncio.sleep(randrange(16,35))
+            _LOGGER.debug("Requesting login token")
             resp = await self.websession.request(
-                "POST",
-                f"{BASE_ENDPOINT}{AUTH_ENDPOINT}",
-                json={
-                    "username": self.account.username,
-                    "password": self.account.password,
-                    "rememberMe": "true",
-                },
-                headers=self.headers,
+                method="POST",
+                url=f"{BASE_ENDPOINT}{AUTH_ENDPOINT}",
+                json={"username": self.account.username, "password": self.account.password, "rememberMe": "true"},
+                headers={**self.headers, **{ "Referrer": BASE_URL + "/home" }},
                 ssl=self.ssl_context,
+                allow_redirects=False
             )
 
             if resp.status == 400:
                 raise SmartMeterTexasAuthError("Username or password was not accepted")
 
             if resp.status == 403:
+                _LOGGER.debug(resp.json)
                 raise SmartMeterTexasRateLimitError(
                     "Reached ratelimit or brute force protection"
                 )

@@ -1,8 +1,8 @@
 import datetime
 
-BASE_HOSTNAME = "smartmetertexas.com"
-BASE_URL = "https://" + BASE_HOSTNAME + "/"
-BASE_ENDPOINT = BASE_URL + "api"
+BASE_HOSTNAME = "www.smartmetertexas.com"
+BASE_URL = "https://" + BASE_HOSTNAME
+BASE_ENDPOINT = BASE_URL + "/api"
 AUTH_ENDPOINT = "/user/authenticate"
 DASHBOARD_ENDPOINT = "/dashboard"
 LATEST_OD_READ_ENDPOINT = "/usage/latestodrread"
@@ -10,13 +10,25 @@ METER_ENDPOINT = "/meter"
 OD_READ_ENDPOINT = "/ondemandread"
 
 USER_AGENT_TEMPLATE = (
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) "
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
     "AppleWebKit/537.36 (KHTML, like Gecko) "
-    "Chrome/85.0.{BUILD}.{REV} Safari/537.36"
+    "Chrome/95.0.{BUILD}.{REV} "
+    "Safari/537.36 "
+    "Edg/95.0.{BUILD}.{REV}"
 )
 CLIENT_HEADERS = {
-    "Content-Type": "application/json",
-    "Accept": "application/json",
+    "Accept": "application/json, text/plain, */*",
+    "Accept-Encoding": "gzip, deflate, br",
+    "Accept-Language": "en-US,en;q=0.9",
+    "Content-Type": "application/json;charset=UTF-8",
+    "Cache-Control": "no-cache",
+    "Pragma": "no-cache",
+    "DNT": "1",
+    "Connection": "keep-alive",
+    "Sec-Fetch-Dest": "empty",
+    "Sec-Fetch-Mode": "cors",
+    "Sec-Fetch-Site": "same-origin",
+    "Origin": BASE_URL
 }
 
 API_ERROR_KEY = "errormessage"
