@@ -234,14 +234,6 @@ class Client:
                 )
             self.ssl_context = new_ssl_context
 
-    async def _init_websession(self):
-        """Make an initial GET request to initialize the session otherwise
-        future POST requests will timeout."""
-        self._init_ssl_context()
-        await self.websession.get(
-            BASE_URL, headers=self._agent_headers(), ssl=self.ssl_context
-        )
-
     def _agent_headers(self):
         """Build the user agent header."""
         if not self.user_agent:
@@ -285,9 +277,6 @@ class Client:
     async def authenticate(self):
         if not self.token_valid:
             _LOGGER.debug("Requesting login token")
-
-            # Make an initial GET request otherwise subsequent calls will timeout.
-            await self._init_websession()
 
             resp = await self.websession.request(
                 "POST",
