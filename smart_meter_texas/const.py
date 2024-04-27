@@ -1,13 +1,13 @@
 import datetime
 
 BASE_HOSTNAME = "www.smartmetertexas.com"
-BASE_URL = "https://" + BASE_HOSTNAME
-BASE_ENDPOINT = BASE_URL 
-AUTH_ENDPOINT = "/commonapi/user/authenticate"
-LATEST_OD_READ_ENDPOINT = "/api/usage/latestodrread"
-METER_ENDPOINT = "/api/meter"
-OD_READ_ENDPOINT = "/api/ondemandread"
-INTERVAL_SYNCH = "/api/adhoc/intervalsynch"
+BASE_URL = "https://" + BASE_HOSTNAME + "/"
+BASE_ENDPOINT = BASE_URL + "api"
+AUTH_ENDPOINT = BASE_URL + "/commonapi/user/authenticate"
+LATEST_OD_READ_ENDPOINT = "/usage/latestodrread"
+METER_ENDPOINT = "/meter"
+OD_READ_ENDPOINT = "/ondemandread"
+INTERVAL_SYNCH = "/adhoc/intervalsynch"
 
 USER_AGENT_TEMPLATE = (
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) "

@@ -21,7 +21,6 @@ from .const import (
     AUTH_ENDPOINT,
     BASE_ENDPOINT,
     BASE_HOSTNAME,
-    BASE_URL,
     CLIENT_HEADERS,
     INTERVAL_SYNCH,
     LATEST_OD_READ_ENDPOINT,
@@ -280,7 +279,7 @@ class Client:
 
             resp = await self.websession.request(
                 "POST",
-                f"{BASE_ENDPOINT}{AUTH_ENDPOINT}",
+                AUTH_ENDPOINT,
                 json={
                     "username": self.account.username,
                     "password": self.account.password,
