@@ -12,7 +12,7 @@ INTERVAL_SYNCH = "/adhoc/intervalsynch"
 USER_AGENT_TEMPLATE = (
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) "
     "AppleWebKit/537.36 (KHTML, like Gecko) "
-    "Chrome/85.0.{BUILD}.{REV} Safari/537.36"
+    "Chrome/123.0.{BUILD}.{REV} Safari/537.36"
 )
 CLIENT_HEADERS = {
     "accept": "application/json, text/plain, */*",
@@ -22,7 +22,6 @@ CLIENT_HEADERS = {
     "origin": "https://www.smartmetertexas.com",
     "pragma": "no-cache",
     "referer": "https://www.smartmetertexas.com/home",
-    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
 }
 
 API_ERROR_KEY = "errormessage"
